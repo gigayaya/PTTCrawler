@@ -1,4 +1,4 @@
-#Copyright © 2015 by Gigayaya
+#Copyright (c) 2015 by Gigayaya
 
 # -*- coding: utf-8-*-
 #!/usr/bin/python
@@ -13,12 +13,6 @@ import random
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-#===========Settings==============
-MySQLHost = "localhost"
-MySQLUser = "root"
-MySQLPassword = "12345678"
-MySQLdb = "PTT"
-#=================================
 
 #get the time of content
 def PTTtime(html):
@@ -71,7 +65,7 @@ def MonthChack(Month):
 #get commit of content
 def ContentCrawler(PTTurl):
 	#log in MySQL
-	db = MySQLdb.connect(host=MySQLHost, user=MySQLUser, passwd=MySQLPassword, db=MySQLdb)
+	db = MySQLdb.connect(host='localhost',user='root',passwd='12345678',db='PTT')
 	db.set_character_set('utf8')
 	cursor = db.cursor()
 
@@ -117,6 +111,7 @@ def ContentCrawler(PTTurl):
 		sqlcommand = "INSERT INTO `PTT`.`test1` (`title`, `url`, `id`, `commit`, `date`) VALUES ('%s', '%s', '%s', '%s', '%s')" %(Title,PTTurl,SQLname,SQLcommit,date)
 		cursor.execute(sqlcommand)
 		db.commit()
+	cursor.close()
 
 #get the previous page link
 def PreviousPage(url):
@@ -158,7 +153,7 @@ def AllLinkOnPage(PTTurl):
 		ContentTittle = Content.findAll(attrs={'class' :'title'})	
 		for TittleUrl in ContentTittle:
 			ContentUrl =  "https://www.ptt.cc" + TittleUrl.find('a').get('href')
-			print ContentUrl
+			print "Parser post: " + ContentUrl
 			#call function parser the post and add to MySQL
 			ContentCrawler(ContentUrl)
 
@@ -173,6 +168,6 @@ def Main(loop,board):
 		print "Done Parser page"
 
 #example, parser all commit in "Soft_job" of 3 pages
-Main(3,"Soft_job")
+Main(2,"Soft_job")
 
 

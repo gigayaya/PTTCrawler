@@ -28,7 +28,7 @@
 
 ##使用方法：
 
-1. 修改開頭settings中的MySQL登入訊息部分
+1. 修改Crawler中的MySQL登入訊息部分
 
 
 2. 使用Main，給參數(頁數,版名)
