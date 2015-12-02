@@ -1,3 +1,5 @@
+#Copyright © 2015 by Gigayaya
+
 # -*- coding: utf-8-*-
 #!/usr/bin/python
 
@@ -11,7 +13,14 @@ import random
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-#function,get the time of content
+#===========Settings==============
+MySQLHost = "localhost"
+MySQLUser = "root"
+MySQLPassword = "12345678"
+MySQLdb = "PTT"
+#=================================
+
+#get the time of content
 def PTTtime(html):
 	Time = html.findAll(attrs={'class' :'article-meta-value'})
 	TimeTemp = Time[3].string
@@ -59,10 +68,10 @@ def MonthChack(Month):
 		MonthReturn = "12"
 	return MonthReturn
 
-#get push of content
+#get commit of content
 def ContentCrawler(PTTurl):
 	#log in MySQL
-	db = MySQLdb.connect(host="localhost", user="root", passwd="29536888", db="PTT")
+	db = MySQLdb.connect(host=MySQLHost, user=MySQLUser, passwd=MySQLPassword, db=MySQLdb)
 	db.set_character_set('utf8')
 	cursor = db.cursor()
 
@@ -80,6 +89,7 @@ def ContentCrawler(PTTurl):
 
 	#get commit of content
 	commit = soup.findAll(attrs={'class' :'push'})
+
 	#analysis the raw data of commit
 	for rawdata in commit:
 		SQLname = ""
