@@ -12,12 +12,9 @@ import random
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-def PTTtime(PTTurl):
-	cookies = dict(over18='1')
-	res = requests.get(str(PTTurl), verify=False, cookies=cookies)
-	content = res.content
-	soup = BeautifulSoup(content.decode('utf-8','ignore')) 
-	Time = soup.findAll(attrs={'class' :'article-meta-value'})
+#function,get the time of content
+def PTTtime(html):
+	Time = html.findAll(attrs={'class' :'article-meta-value'})
 	TimeTemp = Time[3].string
 	Month = ""
 	Month += TimeTemp[4] + TimeTemp[5] + TimeTemp[6]
@@ -34,6 +31,7 @@ def PTTtime(PTTurl):
 	Result += Year + "-" + Month + "-" + Day
 	return Result
 
+#translation English to Integer
 def MonthChack(Month):
 	MonthReturn = ""
 	if(Month == "Jan"):
@@ -62,25 +60,28 @@ def MonthChack(Month):
 		MonthReturn = "12"
 	return MonthReturn
 
+#get push of content
 def ContentCrawler(PTTurl):
-	
-	db = MySQLdb.connect(host="localhost", user="root", passwd="12345678", db="PTT")
+	#log in MySQL
+	db = MySQLdb.connect(host="localhost", user="root", passwd="29536888", db="PTT")
 	db.set_character_set('utf8')
 	cursor = db.cursor()
 
+	#parser settings
 	cookies = dict(over18='1')
 	res = requests.get(str(PTTurl), verify=False, cookies=cookies)
 	content = res.content
 	soup = BeautifulSoup(content.decode('utf-8','ignore')) 
 
+	#get the title name
 	try:
 		Title = soup.find("meta", {"property":"og:title"})['content']
 	except:
 		Title = "unknown"
 
+	#get commit of content
 	commit = soup.findAll(attrs={'class' :'push'})
-
-
+	#analysis the raw data of commit
 	for rawdata in commit:
 		SQLname = ""
 		SQLpush = ""
@@ -102,12 +103,13 @@ def ContentCrawler(PTTurl):
 			SQLcommit = SQLnopush
 		else:
 			SQLcommit = SQLpush
-		#SQL command
-		date = PTTtime(PTTurl)
+		#SQL command insert the data
+		date = PTTtime(soup)
 		sqlcommand = "INSERT INTO `PTT`.`test1` (`title`, `url`, `id`, `commit`, `date`) VALUES ('%s', '%s', '%s', '%s', '%s')" %(Title,PTTurl,SQLname,SQLcommit,date)
 		cursor.execute(sqlcommand)
 		db.commit()
 
+#get the previous page link
 def PreviousPage(url):
 	ReturnUrl = ""
 	PTTurl = str(url)
@@ -122,6 +124,7 @@ def PreviousPage(url):
 		ReturnUrl = "https://www.ptt.cc" + ReturnUrl
 	return str(ReturnUrl)
 
+#find all links on page
 def AllLinkOnPage(PTTurl):
 	print "Start search links on: " + PTTurl
 	CheckIsDelete = False
@@ -130,6 +133,7 @@ def AllLinkOnPage(PTTurl):
 	content = res.content
 	soup = BeautifulSoup(content.decode('utf-8','ignore')) 
 	AllTittle = soup.findAll(attrs={'class' :'r-ent'})
+	#if a post is deleted, the authos is "-" and skip the post
 	for Content in AllTittle:
 		CheckIsDelete = False
 		CheckDeleteDiv = Content.findAll(attrs={'class' :'meta'})
@@ -141,24 +145,25 @@ def AllLinkOnPage(PTTurl):
 					break 
 		if(CheckIsDelete == True):
 			continue
-			
+		#if author is not "-",parser the post	
 		ContentTittle = Content.findAll(attrs={'class' :'title'})	
 		for TittleUrl in ContentTittle:
 			ContentUrl =  "https://www.ptt.cc" + TittleUrl.find('a').get('href')
 			print ContentUrl
+			#call function parser the post and add to MySQL
 			ContentCrawler(ContentUrl)
 
+#main function, type board name and how many page you want ot parser
 def Main(loop,board):
 	url = "https://www.ptt.cc/bbs/" + str(board) + "/index.html"
 	for times in range(0,loop):
 		global url
-		print "Start Parser " + url
+		print "Start Parser page" + url
 		AllLinkOnPage(url)
 		url = PreviousPage(url)
-		print "Done Parser"
+		print "Done Parser page"
 
-
-
-Main(4,"Soft_job")
+#example, parser all commit in "Soft_job" of 3 pages
+Main(3,"Soft_job")
 
 
