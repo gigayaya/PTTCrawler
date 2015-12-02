@@ -13,22 +13,22 @@
 
 ##需要環境:
 
-###Python 2.7
+####Python 2.7
 
 
-1. requests套件 
+1. requests套件 [http://docs.python-requests.org/en/latest/](http://docs.python-requests.org/en/latest/)
 
 
-2. BeautifulSoup套件
+2. BeautifulSoup套件 [http://www.crummy.com/software/BeautifulSoup/](http://www.crummy.com/software/BeautifulSoup/)
 
 
-3. MySQLdb套件
+3. MySQLdb套件 [https://pypi.python.org/pypi/MySQL-python](https://pypi.python.org/pypi/MySQL-python)
 
-###MySQL Server
+####MySQL Server
 
 ##使用方法：
 
-1. 修改ContentCrawler中的MySQL登入訊息部分
+1. 修改開頭settings中的MySQL登入訊息部分
 
 
 2. 使用Main，給參數(頁數,版名)
