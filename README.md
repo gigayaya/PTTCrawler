@@ -1,6 +1,6 @@
 # PTTCrawler
 
-##This is a Crawler for PTT.
+## This is a Crawler for PTT.
 
 這是小弟無聊寫來練習的PTT推文爬蟲(不一定要用來爬推文XD)
 
@@ -11,9 +11,9 @@
 輸出：把目標範圍內文章中的所有推文，每個推文Insert一次到MySQL
 
 
-##需要環境:
+## 需要環境:
 
-####Python 2.7
+#### Python 2.7
 
 
 1. requests套件 [http://docs.python-requests.org/en/latest/](http://docs.python-requests.org/en/latest/)
@@ -24,9 +24,9 @@
 
 3. MySQLdb套件 [https://pypi.python.org/pypi/MySQL-python](https://pypi.python.org/pypi/MySQL-python)
 
-####MySQL Server
+#### MySQL Server
 
-##使用方法：
+## 使用方法：
 
 1. 修改Crawler中的MySQL登入訊息部分
 
